@@ -2,7 +2,6 @@
 
 import os, sys
 import pandas as pd
-import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 # Open a file
 path = os.getcwd()
@@ -58,6 +57,7 @@ def main():
     #----------------------------------------------------------------------------------------------------------------------------------
 
     price_menage_electricity = df_price_menage_electricity.columns[1:].to_list()
+    
     labels = ["toutes tranches","tranches DA", "tranches DB", "tranches DC","tranches DD","tranches DE"]
     
     fig = go.Figure()
@@ -70,7 +70,7 @@ def main():
     fig.update_xaxes(title_text='Temps en année')
     fig.update_yaxes(title_text="Prix au détail de l'électricité TTC (€)")
     fig.show()
-    #plt.show()
+    
     #----------------------------------------------------------------------------------------------------------------------------------
     #-------------------------------- price industry ----------------------------------------------------------------------------------
     #----------------------------------------------------------------------------------------------------------------------------------
@@ -104,15 +104,7 @@ def main():
                         "Production nette d'électricité éolienne (en GWh)",
                         "Production nette d'électricité photovoltaïque (en GWh)",
                         "Production nette d'électricité thermique (en GWh)"]
-    # plt.figure(figsize=(9, 12))
-    # i=0
-    # labels = ["Production totale  d'électricité","électricité nucléaire", "électricité hydraulique", "électricité éolienne","électricité photovoltaïque","électricité thermique"]
-    # for column in production_brut:
-    #     plt.plot(df_electricity_2023.Période,df_electricity_2023[column], label = labels[i])
-    #     i= i+1
-    # plt.xlabel("Time(Months)")
-    # plt.ylabel("Production brute d'électricité (GWh)")
-    # plt.legend()
+  
 
     fig = go.Figure()
     i=0
@@ -154,7 +146,6 @@ def main():
                 "5. Consommation d'électricité primaire et d'équivalent primaire d'électricité nucléaire CVC-CJO (en GWh)",
                 "6. Consommation d'électricité primaire et d'équivalent primaire d'électricité nucléaire CVS-CVC-CJO (en GWh)"]
 
-    plt.figure(figsize=(9, 12))
     labels =["total: hydraulic - eolic - solar electricity ","hydraulic electricity","eolic electricity","solar electricity","production nuclear"]
 
     fig = go.Figure()
@@ -167,7 +158,6 @@ def main():
     fig.update_yaxes(title_text="Production brute d'électricité (GWh)")
     fig.show()
 
-    plt.figure(figsize=(9, 12))
     labels =["Total_import_export","import", "export"]
 
     fig = go.Figure()
@@ -180,7 +170,6 @@ def main():
     fig.update_yaxes(title_text="Import/Export (GWh)")
     fig.show()
 
-    plt.figure(figsize=(9, 12))
     labels =["energy consumption non nucleiare","energy consumption nucleiare CVC-CJO", "energy consumption nucleiare CVS-CVC-CJO"]
 
 
@@ -194,7 +183,6 @@ def main():
     fig.update_yaxes(title_text="Consommation primaire d'énergie (GWh)")
     fig.show()
 
-    #plt.show()
         
 if __name__ == "__main__":
     main()
