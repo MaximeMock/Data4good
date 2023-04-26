@@ -11,5 +11,6 @@ __pycache__
 *.py[cod]
 *$py.class
 Modules/__pycache__/
+Modules/__pycache__
 # Jupyter Notebook
 .ipynb_checkpoints
