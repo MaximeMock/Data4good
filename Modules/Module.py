@@ -1,13 +1,29 @@
 import os, sys
 import pandas as pd
 import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 
 # Open a file
 path = os.getcwd()
 dirs = os.listdir( path +'/Data/')
 dirs.sort()
 
-print(dirs)
+#print(dirs)
+ 
+def convert_to_float_except_period(col):
+    if col.name == 'PERIODE':
+        return col
+    else:
+        return pd.to_numeric(col, errors='coerce')
+    
+def ouverture_df(path, date_debut, date_fin):
+    df = pd.read_csv(path, sep=';').drop(0).sort_values('Période')
+    df = df.loc[(df.loc[:,'Période'] >= date_debut) & (df.loc[:,'Période'] <= date_fin)].reset_index(drop=True)
+    df.index = pd.to_datetime(df.Période)
+    for col_name in df:
+        df.loc[:, col_name] = convert_to_float_except_period(df.loc[:, col_name])
+    return df
+
 
 def read_electricity_data(date_debut: str, date_fin: str):
     """
@@ -198,11 +214,11 @@ def scatter_plot_2lines(x1, y1, label_1, x_label, y_label, title, x2 = None, y2 
 
 def ouverture_df(path, date_debut, date_fin):
     '''
-    Ouvre un fichier sous forme de DatFrame pandas.
+    Open a file datas in pandas dataframe
         Input :
-        path (str): chemin du fichier à ouvrir
-        date_debut (str): date de début de la période à étudier 
-        date_fin (str): date de fin de la période à étudier
+        path (str): path of the file to open
+        date_debut (str): starting date of the period to treat
+        date_fin (str): ending date of the period to treat
         Return :
         Dataframe pandas
     '''
@@ -297,3 +313,86 @@ def plot_n_scatter_2axis(x, y_1, ys, label_1, labels, title, x_label, y_label, s
         fig.show()
     if save:
         fig.write_image(path_to_save)
+        
+
+def barchart(df, year1, year2, name1, name2, title, x_label, y_label):
+    '''
+    Plot a barchart plot to compare 2 years.
+    Input :
+    df (pd.DataFrame) : Dataframe of the data you want to plot
+    year1 (str) : First year you want to look at
+    year2 (str) : Second year you want to look at
+    name1 (str) : Name of the first value
+    name2 (str) : Name of the second value
+    title (str) : Title of the graph
+    x_label (str) : Name for X axis
+    y_label (str) : Name for Y axis
+    
+    Return :
+    None    
+    '''
+    fig = go.Figure()
+    fig.add_trace(go.Bar(
+        x=df.index,
+        y=df[year1]*100,
+        name=name1,
+        marker_color='indianred'
+    ))
+    fig.add_trace(go.Bar(
+        x=df.index,
+        y=df[year2]*100,
+        name=name2,
+        marker_color='lightsalmon'
+    ))
+
+    fig.update_layout(title_text=title, legend_title_text = "Légende :", width=800, height=400, template='simple_white')
+    fig.update_xaxes(title_text=x_label)
+    fig.update_yaxes(title_text=y_label)
+
+    # Here we modify the tickangle of the xaxis, resulting in rotated labels.
+    fig.update_layout(barmode='group', xaxis_tickangle=-45)
+    fig.show()
+    
+
+def BubbleCloud(df, labels, values, label_highlight = None):
+    '''
+    Plot a bubblecloud.
+    Input :
+    df (pd.DataFrame) : Dataframe of the data you want to plot
+    labels (str) : Name of the column of the DataFrame containing labels of the data
+    values (str) : Name of the column of the DataFrame containing labels of the data
+    label_highlight (str) : Name of the label(s) you want to highlight
+    
+    Return :
+    None    
+    '''
+    n_colors = len(df[labels])
+    get_colors = lambda n: ["#%06x" % random.randint(0, 0xFFFFFF) for _ in range(n)]
+    colours = get_colors(n_colors)
+    plot_labels = [f'{i} \n({str(j)} ktep)' for i,j in zip(df[labels], 
+                                                    df[values])]
+    circle_plot = circlify.circlify(df[values].tolist(), 
+                               target_enclosure=circlify.Circle(x=0, y=0))
+
+    # Note that circle_plot starts from the smallest to the largest, 
+    # so we have to reverse the list
+    circle_plot.reverse()
+    fig, axs = plt.subplots(figsize=(15, 15))
+    # Find axis boundaries
+    lim = max(max(abs(circle.x) + circle.r, 
+              abs(circle.y) + circle.r,) 
+          for circle in circle_plot)
+    plt.xlim(-lim, lim)
+    plt.ylim(-lim, lim)
+    # Display circles.
+    for circle, colour, label in zip(circle_plot, colours, plot_labels):
+        x, y, r = circle
+        axs.add_patch(plt.Circle((x, y), r, linewidth=1, color = colour,
+                             edgecolor='grey'))
+        if label_highlight in label:
+            plt.annotate(label, (x, y), color = 'black', fontsize = r*75, va='center', ha='center', fontweight='bold')
+        else:
+            plt.annotate(label, (x, y), color = 'white', fontsize = r*75, va='center', ha='center', fontweight='bold')
+    plt.axis('off')
+    plt.title('Production de pétrole en 2021', fontsize = 30)
+    plt.show()
