@@ -1,6 +1,9 @@
 import os, sys
 import pandas as pd
 import plotly.graph_objects as go
+import random
+import circlify
+import matplotlib.pyplot as plt
 
 # Open a file
 path = os.getcwd()

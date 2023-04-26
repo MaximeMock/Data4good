@@ -1,7 +1,13 @@
 import os, sys
 import pandas as pd
 import plotly.graph_objects as go
+
 from plotly.subplots import make_subplots
+
+import random
+import circlify
+import matplotlib.pyplot as plt
+
 
 # Open a file
 path = os.getcwd()
@@ -9,6 +15,7 @@ dirs = os.listdir( path +'/Data/')
 dirs.sort()
 
 #print(dirs)
+
  
 def convert_to_float_except_period(col):
     if col.name == 'PERIODE':
@@ -23,6 +30,7 @@ def ouverture_df(path, date_debut, date_fin):
     for col_name in df:
         df.loc[:, col_name] = convert_to_float_except_period(df.loc[:, col_name])
     return df
+
 
 
 def read_electricity_data(date_debut: str, date_fin: str):
@@ -396,6 +404,7 @@ def BubbleCloud(df, labels, values, label_highlight = None):
     plt.axis('off')
     plt.title('Production de pétrole en 2021', fontsize = 30)
     plt.show()
+
     
 def change_col_to_point(x):
     """
@@ -547,3 +556,4 @@ def plot_subplot_resources(list_series, list_label, save: bool=False, path_to_sa
         fig.show()
     if save:
         fig.write_image(path_to_save)
+
