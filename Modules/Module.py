@@ -533,7 +533,7 @@ def plot_subplot_resources(list_series, list_label, save: bool=False, path_to_sa
         >>> series_list = [df['A'], df['B']]
         >>> plot_subplot_resources(series_list, ['Resource A', 'Resource B'])
     """
-    fig = make_subplots(rows=len(list_series), cols=1)
+    fig = make_subplots(rows=len(list_series), cols=1, x_title='Temps en année', y_title="Production d'électricitè (GWh)",)
     
     for i in range(len(list_series)):
         fig.append_trace(go.Scatter(
@@ -548,12 +548,9 @@ def plot_subplot_resources(list_series, list_label, save: bool=False, path_to_sa
 
     # Customize the layout of the plot
     fig.update_layout(title_text="Electricitè pour la production a partir des different resourse", legend_title_text="Légende :", width=1200, height=800, template='simple_white')
-    fig.update_xaxes(title_text='Temps en année')
-    fig.update_yaxes(title_text="Prod d'élec (GWh)")
-
+   
     # Display or save the plot as specified
     if not save:
         fig.show()
     if save:
         fig.write_image(path_to_save)
-
